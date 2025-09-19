@@ -2,6 +2,7 @@ const main = document.getElementById("main");
 const clicks = document.getElementById("clicks");
 const clickArea = document.getElementById("click-area");
 const store = document.getElementById("store");
+const itemInfo = document.getElementById("item-info");
 
 // Pega clicks salvos
 let savedClicks = parseInt(localStorage.getItem("clicks")) || 0;
@@ -16,7 +17,7 @@ const storeItems = [
         baseCost: 10,
         multiplier: 1.15,
         unlockCondition: () => parseInt(localStorage.getItem("clicks")) > 9,
-        delay: 5000,
+        delay: 2000,
         lastRun: 0,
         effect: () => {
             let amount = parseInt(localStorage.getItem("autoclickers")) || 0;
@@ -39,6 +40,7 @@ function addItemStore(item) {
     const img = document.createElement("img");
     img.id = item.id;
     img.src = item.img;
+    addStoreItemListeners(item, img);
 
     const span = document.createElement("span");
     span.classList.add("item-count");
@@ -108,6 +110,34 @@ setInterval(() => {
         }
     });
 }, 1000);
+
+// Função para mostrar informações do item na div fixa
+function showItemInfo(item) {
+    const cost = localStorage.getItem(`${item.upgradeKey}-cost`) || item.baseCost;
+
+    itemInfo.innerHTML = `
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+            <img src="${item.img}" alt="${item.id}" style="width:40px; height:40px;"/>
+            <div>
+                <strong style="font-size: 1.2rem">${item.id}</strong><br/>
+                <strong style="font-size: 1.2rem"> Preço: </strong> ${cost} clicks
+            </div>
+        </div>
+    `;
+
+    itemInfo.style.display = "flex";
+}
+
+// Função para esconder informações
+function hideItemInfo() {
+    itemInfo.style.display = "none";
+}
+
+// Adicione nos listeners da loja quando criar os itens
+function addStoreItemListeners(item, imgElement) {
+    imgElement.addEventListener("mouseenter", () => showItemInfo(item));
+    imgElement.addEventListener("mouseleave", hideItemInfo);
+}
 
 // Inicializa loja na primeira carga
 initStore();
