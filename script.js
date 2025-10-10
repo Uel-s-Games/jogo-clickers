@@ -8,15 +8,30 @@ const itemInfo = document.getElementById("item-info");
 let savedClicks = parseInt(localStorage.getItem("clicks")) || 0;
 clicks.textContent = savedClicks;
 
+let valueBaseClick = 1;
+let critChance = parseFloat(localStorage.getItem("critChance")) || 0;
+let critMultiplier = 10;
+
 // Lista de itens da loja
 const storeItems = [
     {
-        id: "cursor",
+        id: "Clique Crítico",
+        img: "./images/crit.png",
+        upgradeKey: "critChance",
+        baseCost: 10,
+        multiplier: 1.50,
+        unlockCondition: () => parseInt(localStorage.getItem("clicks")) > 9,
+        delay: null,
+        lastRun: null,
+        effect: null,
+    },
+    {
+        id: "Clique Automático",
         img: "./images/cursor.png",
         upgradeKey: "autoclickers",
-        baseCost: 10,
+        baseCost: 100,
         multiplier: 1.15,
-        unlockCondition: () => parseInt(localStorage.getItem("clicks")) > 9,
+        unlockCondition: () => parseInt(localStorage.getItem("clicks")) > 99,
         delay: 2000,
         lastRun: 0,
         effect: () => {
@@ -29,7 +44,6 @@ const storeItems = [
             }
         }
     },
-    // pode adicionar outros itens aqui facilmente
 ];
 
 // Função para criar item na loja
@@ -78,6 +92,11 @@ function buyItem(itemId, upgradeKey, baseCost, multiplier) {
         // Atualiza badge do item
         const badge = document.getElementById(itemId).parentElement.querySelector(".item-count");
         badge.textContent = currentUpgrades;
+
+        if (upgradeKey === "critChance") {
+            critChance = currentUpgrades * 1; // cada upgrade dá +2% de chance
+            localStorage.setItem("critChance", critChance);
+        }
     }
 }
 
@@ -92,10 +111,28 @@ function initStore() {
 
 // Clique normal
 clickArea.addEventListener("click", () => {
+    const isCrit = Math.random() * 100 < critChance;
+    const ganho = isCrit ? valueBaseClick * critMultiplier : valueBaseClick
+
     let current = parseInt(clicks.textContent);
-    current++;
+    current+=ganho;
     clicks.textContent = current;
     localStorage.setItem('clicks', current);
+
+    // Efeito visual do clique
+    const clickEffect = document.createElement("span");
+    clickEffect.classList.add("click-effect");
+    clickEffect.textContent = `+${ganho}${isCrit ? " 💥" : ""}`;
+
+    clickEffect.style.left = `${event.clientX}px`;
+    clickEffect.style.top = `${event.clientY}px`;
+
+    if (isCrit) clickEffect.classList.add("crit");
+
+    document.body.appendChild(clickEffect);
+
+    // Remove depois da animação
+    setTimeout(() => clickEffect.remove(), 800);
 
     initStore(); // verifica se algum item desbloqueou
 });
