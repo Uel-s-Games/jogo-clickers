@@ -8,7 +8,7 @@ const itemInfo = document.getElementById("item-info");
 let savedClicks = parseInt(localStorage.getItem("clicks")) || 0;
 clicks.textContent = savedClicks;
 
-let valueBaseClick = 1;
+let valueBaseClick = parseInt(localStorage.getItem("valueBaseClick")) || 1;
 let critChance = parseFloat(localStorage.getItem("critChance")) || 0;
 let critMultiplier = parseFloat(localStorage.getItem("critMultiplier")) || 10;
 
@@ -49,8 +49,19 @@ const storeItems = [
         img: "./images/critMultiplier.png",
         upgradeKey: "CritMultiplierValue",
         baseCost: 100,
-        multiplier: 1.15,
+        multiplier: 1.35,
         unlockCondition: () => parseInt(localStorage.getItem("clicks")) > 99,
+        delay: null,
+        lastRun: null,
+        effect: null,
+    },
+    {
+        id: "Valor do Clique",
+        img: "./images/clique.png",
+        upgradeKey: "valueBaseClick",
+        baseCost: 5000,
+        multiplier: 2,
+        unlockCondition: () => parseInt(localStorage.getItem("clicks")) > 999,
         delay: null,
         lastRun: null,
         effect: null,
@@ -112,6 +123,12 @@ function buyItem(itemId, upgradeKey, baseCost, multiplier) {
         if (upgradeKey === "CritMultiplierValue") {
             critMultiplier = 10 + currentUpgrades * 5; // cada upgrade adiciona +5 ao crit
             localStorage.setItem("critMultiplier", critMultiplier);
+        }
+
+        if (upgradeKey === "valueBaseClick") {
+            valueBaseClick = parseInt(localStorage.getItem("valueBaseClick") || 1);
+            valueBaseClick += 1; // cada upgrade adiciona +1
+            localStorage.setItem("valueBaseClick", valueBaseClick);
         }
     }
 }
