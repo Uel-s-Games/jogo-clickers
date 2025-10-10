@@ -10,16 +10,16 @@ clicks.textContent = savedClicks;
 
 let valueBaseClick = 1;
 let critChance = parseFloat(localStorage.getItem("critChance")) || 0;
-let critMultiplier = 10;
+let critMultiplier = parseFloat(localStorage.getItem("critMultiplier")) || 10;
 
 // Lista de itens da loja
 const storeItems = [
     {
-        id: "Clique Crítico",
+        id: "Chance Clique Crítico",
         img: "./images/crit.png",
         upgradeKey: "critChance",
         baseCost: 10,
-        multiplier: 1.50,
+        multiplier: 1.30,
         unlockCondition: () => parseInt(localStorage.getItem("clicks")) > 9,
         delay: null,
         lastRun: null,
@@ -32,7 +32,7 @@ const storeItems = [
         baseCost: 100,
         multiplier: 1.15,
         unlockCondition: () => parseInt(localStorage.getItem("clicks")) > 99,
-        delay: 2000,
+        delay: 1000,
         lastRun: 0,
         effect: () => {
             let amount = parseInt(localStorage.getItem("autoclickers")) || 0;
@@ -43,6 +43,17 @@ const storeItems = [
                 localStorage.setItem("clicks", current);
             }
         }
+    },
+    {
+        id: "Valor do Crítico",
+        img: "./images/critMultiplier.png",
+        upgradeKey: "CritMultiplierValue",
+        baseCost: 100,
+        multiplier: 1.15,
+        unlockCondition: () => parseInt(localStorage.getItem("clicks")) > 99,
+        delay: null,
+        lastRun: null,
+        effect: null,
     },
 ];
 
@@ -94,8 +105,13 @@ function buyItem(itemId, upgradeKey, baseCost, multiplier) {
         badge.textContent = currentUpgrades;
 
         if (upgradeKey === "critChance") {
-            critChance = currentUpgrades * 1; // cada upgrade dá +2% de chance
+            critChance = currentUpgrades * 1; // % de chance
             localStorage.setItem("critChance", critChance);
+        }
+
+        if (upgradeKey === "CritMultiplierValue") {
+            critMultiplier = 10 + currentUpgrades * 5; // cada upgrade adiciona +5 ao crit
+            localStorage.setItem("critMultiplier", critMultiplier);
         }
     }
 }

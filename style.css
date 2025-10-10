@@ -163,7 +163,7 @@ html, body {
     transform: translate(-50%, -50%);
     font-weight: bold;
     color: black;
-    font-size: 1rem;
+    font-size: 1.5rem;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
     pointer-events: none;
     animation: floatUp 0.8s ease-out forwards;
@@ -172,7 +172,7 @@ html, body {
 
 .click-effect.crit {
     color: red;
-    font-size: 1.5rem;
+    font-size: 2rem;
 }
 
 /* Animação de subir e sumir */
