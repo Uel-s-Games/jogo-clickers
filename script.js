@@ -15,23 +15,12 @@ let critMultiplier = parseFloat(localStorage.getItem("critMultiplier")) || 10;
 // Lista de itens da loja
 const storeItems = [
     {
-        id: "Chance Clique Crítico",
-        img: "./images/crit.png",
-        upgradeKey: "critChance",
-        baseCost: 10,
-        multiplier: 1.30,
-        unlockCondition: () => parseInt(localStorage.getItem("clicks")) > 9,
-        delay: null,
-        lastRun: null,
-        effect: null,
-    },
-    {
         id: "Clique Automático",
         img: "./images/cursor.png",
         upgradeKey: "autoclickers",
-        baseCost: 100,
-        multiplier: 1.15,
-        unlockCondition: () => parseInt(localStorage.getItem("clicks")) > 99,
+        baseCost: 10,
+        multiplier: 1.10,
+        unlockCondition: () => parseInt(localStorage.getItem("clicks")) > 9,
         delay: 1000,
         lastRun: 0,
         effect: () => {
@@ -45,12 +34,12 @@ const storeItems = [
         }
     },
     {
-        id: "Valor do Crítico",
-        img: "./images/critMultiplier.png",
-        upgradeKey: "CritMultiplierValue",
-        baseCost: 100,
-        multiplier: 1.35,
-        unlockCondition: () => parseInt(localStorage.getItem("clicks")) > 99,
+        id: "Chance Clique Crítico",
+        img: "./images/crit.png",
+        upgradeKey: "critChance",
+        baseCost: 150,
+        multiplier: 2,
+        unlockCondition: () => parseInt(localStorage.getItem("clicks")) > 149,
         delay: null,
         lastRun: null,
         effect: null,
@@ -59,8 +48,19 @@ const storeItems = [
         id: "Valor do Clique",
         img: "./images/clique.png",
         upgradeKey: "valueBaseClick",
-        baseCost: 5000,
-        multiplier: 2,
+        baseCost: 100,
+        multiplier: 1.75,
+        unlockCondition: () => parseInt(localStorage.getItem("clicks")) > 99,
+        delay: null,
+        lastRun: null,
+        effect: null,
+    },
+    {
+        id: "Valor do Crítico",
+        img: "./images/critMultiplier.png",
+        upgradeKey: "CritMultiplierValue",
+        baseCost: 1000,
+        multiplier: 1.5,
         unlockCondition: () => parseInt(localStorage.getItem("clicks")) > 999,
         delay: null,
         lastRun: null,
@@ -136,7 +136,10 @@ function buyItem(itemId, upgradeKey, baseCost, multiplier) {
 // Função para inicializar loja dinamicamente
 function initStore() {
     storeItems.forEach(item => {
-        if (!document.getElementById(item.id) && item.unlockCondition()) {
+        const upgrades = parseInt(localStorage.getItem(item.upgradeKey) || 0);
+
+        // Se já tem upgrade ou se passou da condição de desbloqueio
+        if ((!document.getElementById(item.id)) && (upgrades > 0 || item.unlockCondition())) {
             addItemStore(item);
         }
     });
