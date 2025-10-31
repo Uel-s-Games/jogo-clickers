@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conquistas - Clicker Game</title>
+    <link rel="stylesheet" href="conquistas.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="menu">
+            <div id="profile">
+                <img src="./images/atirador.png" alt="">
+                <p></p>
+            </div>
+
+            <div id="itens">
+                <ul>
+                    <li><a href="index.html">Voltar ao Jogo</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="main">
+            <h1>🏆 Conquistas</h1>
+            
+            <div class="stats-container">
+                <div class="stat-box">
+                    <h3>Conquistas Desbloqueadas</h3>
+                    <div class="stat-value" id="unlocked-count">0/25</div>
+                </div>
+                <div class="stat-box">
+                    <h3>Total de Cliques</h3>
+                    <div class="stat-value" id="total-clicks">0</div>
+                </div>
+                <div class="stat-box">
+                    <h3>Itens Comprados</h3>
+                    <div class="stat-value" id="total-items">0</div>
+                </div>
+            </div>
+
+            <div class="achievements-section">
+                <h2>🎯 Conquistas de Cliques</h2>
+                <div id="click-achievements" class="achievements-grid"></div>
+            </div>
+
+            <div class="achievements-section">
+                <h2>🛍️ Conquistas de Itens</h2>
+                <div id="item-achievements" class="achievements-grid"></div>
+            </div>
+
+            <div class="achievements-section">
+                <h2>💰 Conquistas de Gastos</h2>
+                <div id="spent-achievements" class="achievements-grid"></div>
+            </div>
+
+            <div class="achievements-section">
+                <h2>⭐ Conquistas Especiais</h2>
+                <div id="special-achievements" class="achievements-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="conquistas.js"></script>
+</body>
+</html>

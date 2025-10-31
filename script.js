@@ -12,6 +12,11 @@ let valueBaseClick = parseInt(localStorage.getItem("valueBaseClick")) || 1;
 let critChance = parseFloat(localStorage.getItem("critChance")) || 0;
 let critMultiplier = parseFloat(localStorage.getItem("critMultiplier")) || 10;
 
+// VARIÁVEIS PARA CONQUISTAS
+let totalClicks = parseInt(localStorage.getItem('totalClicks')) || 0;
+let critCount = parseInt(localStorage.getItem('critCount')) || 0;
+let totalItems = parseInt(localStorage.getItem('totalItems')) || 0;
+
 // Lista de itens da loja
 const storeItems = [
     {
@@ -30,6 +35,9 @@ const storeItems = [
                 current += amount;
                 clicks.textContent = current;
                 localStorage.setItem("clicks", current);
+                
+                // Atualizar conquistas
+                updateAchievementStats();
             }
         }
     },
@@ -67,6 +75,146 @@ const storeItems = [
         effect: null,
     },
 ];
+
+// FUNÇÕES PARA CONQUISTAS
+function updateAchievementStats() {
+    // Salvar estatísticas atualizadas
+    localStorage.setItem('totalClicks', totalClicks);
+    localStorage.setItem('critCount', critCount);
+    localStorage.setItem('totalItems', totalItems);
+    
+    // Verificar e desbloquear conquistas
+    checkAndUnlockAchievements();
+}
+
+function checkAndUnlockAchievements() {
+    const stats = getCurrentStats();
+    const unlocked = loadUnlockedAchievements();
+    let newAchievements = [];
+
+    // Conquistas de Cliques
+    if (stats.totalClicks >= 1 && !unlocked.includes("first_click")) {
+        unlocked.push("first_click");
+        newAchievements.push("Primeiro Clique!");
+        showAchievementPopup("Primeiro Clique!", "👆");
+    }
+    if (stats.totalClicks >= 10 && !unlocked.includes("click_10")) {
+        unlocked.push("click_10");
+        newAchievements.push("Clique Iniciante");
+        showAchievementPopup("Clique Iniciante", "🔟");
+    }
+    if (stats.totalClicks >= 100 && !unlocked.includes("click_100")) {
+        unlocked.push("click_100");
+        newAchievements.push("Clique Intermediário");
+        showAchievementPopup("Clique Intermediário", "💯");
+    }
+    if (stats.totalClicks >= 1000 && !unlocked.includes("click_1000")) {
+        unlocked.push("click_1000");
+        newAchievements.push("Clique Avançado");
+        showAchievementPopup("Clique Avançado", "🎯");
+    }
+    if (stats.totalClicks >= 10000 && !unlocked.includes("click_10000")) {
+        unlocked.push("click_10000");
+        newAchievements.push("Mestre dos Cliques");
+        showAchievementPopup("Mestre dos Cliques", "👑");
+    }
+
+    // Conquistas de Itens
+    if (stats.totalItems >= 1 && !unlocked.includes("first_item")) {
+        unlocked.push("first_item");
+        newAchievements.push("Primeira Compra");
+        showAchievementPopup("Primeira Compra", "🛒");
+    }
+    if (stats.totalItems >= 10 && !unlocked.includes("item_10")) {
+        unlocked.push("item_10");
+        newAchievements.push("Colecionador");
+        showAchievementPopup("Colecionador", "📦");
+    }
+    if (stats.totalItems >= 50 && !unlocked.includes("item_50")) {
+        unlocked.push("item_50");
+        newAchievements.push("Mestre das Compras");
+        showAchievementPopup("Mestre das Compras", "🏪");
+    }
+
+    // Conquistas Especiais
+    if (stats.critCount >= 1 && !unlocked.includes("first_crit")) {
+        unlocked.push("first_crit");
+        newAchievements.push("Crítico!");
+        showAchievementPopup("Crítico!", "💥");
+    }
+    if (stats.critCount >= 10 && !unlocked.includes("crit_10")) {
+        unlocked.push("crit_10");
+        newAchievements.push("Sorte Crítica");
+        showAchievementPopup("Sorte Crítica", "🎲");
+    }
+    if (stats.autoClickers >= 1 && !unlocked.includes("auto_clicker")) {
+        unlocked.push("auto_clicker");
+        newAchievements.push("Automático");
+        showAchievementPopup("Automático", "🤖");
+    }
+    if (stats.currentClicks >= 1000 && !unlocked.includes("rich")) {
+        unlocked.push("rich");
+        newAchievements.push("Rico");
+        showAchievementPopup("Rico", "💰");
+    }
+    if (stats.currentClicks >= 10000 && !unlocked.includes("millionaire")) {
+        unlocked.push("millionaire");
+        newAchievements.push("Milionário");
+        showAchievementPopup("Milionário", "💎");
+    }
+
+    // Conquista de todos os itens
+    const uniqueItems = getUniqueItemsCount();
+    if (uniqueItems >= 4 && !unlocked.includes("all_items")) {
+        unlocked.push("all_items");
+        newAchievements.push("Complecionista");
+        showAchievementPopup("Complecionista", "⭐");
+    }
+
+    if (newAchievements.length > 0) {
+        saveUnlockedAchievements(unlocked);
+        console.log('Novas conquistas desbloquadas:', newAchievements);
+    }
+}
+
+function getCurrentStats() {
+    return {
+        totalClicks: totalClicks,
+        totalItems: totalItems,
+        currentClicks: parseInt(localStorage.getItem("clicks")) || 0,
+        autoClickers: parseInt(localStorage.getItem("autoclickers")) || 0,
+        critCount: critCount
+    };
+}
+
+function getUniqueItemsCount() {
+    const itemKeys = ['autoclickers', 'critChance', 'valueBaseClick', 'CritMultiplierValue'];
+    return itemKeys.filter(key => parseInt(localStorage.getItem(key)) > 0).length;
+}
+
+function loadUnlockedAchievements() {
+    return JSON.parse(localStorage.getItem('unlockedAchievements')) || [];
+}
+
+function saveUnlockedAchievements(unlocked) {
+    localStorage.setItem('unlockedAchievements', JSON.stringify(unlocked));
+}
+
+function showAchievementPopup(name, icon) {
+    const popup = document.getElementById('popup-conquista');
+    popup.innerHTML = `
+        <div class="popup-content">
+            <div class="achievement-icon-popup">${icon}</div>
+            <h3>Conquista Desbloqueada!</h3>
+            <p>${name}</p>
+        </div>
+    `;
+    popup.classList.remove('hidden');
+    
+    setTimeout(() => {
+        popup.classList.add('hidden');
+    }, 3000);
+}
 
 // Função para criar item na loja
 function addItemStore(item) {
@@ -115,6 +263,15 @@ function buyItem(itemId, upgradeKey, baseCost, multiplier) {
         const badge = document.getElementById(itemId).parentElement.querySelector(".item-count");
         badge.textContent = currentUpgrades;
 
+        // Atualizar estatísticas para conquistas
+        totalItems += 1;
+        updateAchievementStats();
+
+        // gastos totais
+        let totalSpent = parseInt(localStorage.getItem('totalSpent')) || 0;
+        totalSpent += currentCost;
+        localStorage.setItem('totalSpent', totalSpent);
+
         if (upgradeKey === "critChance") {
             critChance = currentUpgrades * 1; // % de chance
             localStorage.setItem("critChance", critChance);
@@ -130,6 +287,8 @@ function buyItem(itemId, upgradeKey, baseCost, multiplier) {
             valueBaseClick += 1; // cada upgrade adiciona +1
             localStorage.setItem("valueBaseClick", valueBaseClick);
         }
+        
+        initStore(); // verifica se novos itens desbloquearam
     }
 }
 
@@ -151,9 +310,14 @@ clickArea.addEventListener("click", () => {
     const ganho = isCrit ? valueBaseClick * critMultiplier : valueBaseClick
 
     let current = parseInt(clicks.textContent);
-    current+=ganho;
+    current += ganho;
     clicks.textContent = current;
     localStorage.setItem('clicks', current);
+    
+    // Atualizar estatísticas para conquistas
+    totalClicks += 1;
+    if (isCrit) critCount += 1;
+    updateAchievementStats();
 
     // Efeito visual do clique
     const clickEffect = document.createElement("span");
@@ -173,7 +337,7 @@ clickArea.addEventListener("click", () => {
     initStore(); // verifica se algum item desbloqueou
 });
 
-
+// Sistema de cliques automáticos
 setInterval(() => {
     const now = Date.now();
     storeItems.forEach(item => {
@@ -214,3 +378,6 @@ function addStoreItemListeners(item, imgElement) {
 
 // Inicializa loja na primeira carga
 initStore();
+
+// Verificar conquistas na inicialização
+checkAndUnlockAchievements();

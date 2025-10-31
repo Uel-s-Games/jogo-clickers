@@ -48,6 +48,13 @@ html, body {
     width: 100%;
 }
 
+
+#itens a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
 #itens ul {
     list-style: none;
     width: 100%;
@@ -184,5 +191,62 @@ html, body {
     100% {
         transform: translate(-50%, -120%) scale(1.2);
         opacity: 0;
+    }
+}
+
+/* Popup de Conquistas */
+.popup {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #4caf50, #8bc34a);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    animation: slideIn 0.5s ease-out;
+    border-left: 5px solid #ffcc00;
+}
+
+.popup.hidden {
+    display: none;
+}
+
+.popup-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.achievement-icon-popup {
+    font-size: 2rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.popup-content h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.popup-content p {
+    margin: 5px 0 0 0;
+    font-weight: bold;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
     }
 }
