@@ -4,7 +4,6 @@ const clickArea = document.getElementById("click-area");
 const store = document.getElementById("store");
 const itemInfo = document.getElementById("item-info");
 
-// Pega clicks salvos
 let savedClicks = parseInt(localStorage.getItem("clicks")) || 0;
 clicks.textContent = savedClicks;
 
@@ -12,12 +11,22 @@ let valueBaseClick = parseInt(localStorage.getItem("valueBaseClick")) || 1;
 let critChance = parseFloat(localStorage.getItem("critChance")) || 0;
 let critMultiplier = parseFloat(localStorage.getItem("critMultiplier")) || 10;
 
-// VARIÁVEIS PARA CONQUISTAS
 let totalClicks = parseInt(localStorage.getItem('totalClicks')) || 0;
 let critCount = parseInt(localStorage.getItem('critCount')) || 0;
 let totalItems = parseInt(localStorage.getItem('totalItems')) || 0;
 
-// Lista de itens da loja
+let manualClicks = parseInt(localStorage.getItem('manualClicks')) || 0;
+let autoClicks = parseInt(localStorage.getItem('autoClicks')) || 0;
+let biggestClick = parseInt(localStorage.getItem('biggestClick')) || 0;
+let biggestCrit = parseInt(localStorage.getItem('biggestCrit')) || 0;
+let timePlayed = parseInt(localStorage.getItem('timePlayed')) || 0;
+let peakCPS = parseFloat(localStorage.getItem('peakCPS')) || 0;
+
+if (!localStorage.getItem('sessionStartTime')) {
+    localStorage.setItem('sessionStartTime', Date.now());
+    localStorage.setItem('sessionStartClicks', savedClicks);
+}
+
 const storeItems = [
     {
         id: "Clique Automático",
@@ -36,7 +45,9 @@ const storeItems = [
                 clicks.textContent = current;
                 localStorage.setItem("clicks", current);
                 
-                // Atualizar conquistas
+                autoClicks += amount;
+                localStorage.setItem('autoClicks', autoClicks);
+                
                 updateAchievementStats();
             }
         }
@@ -76,14 +87,11 @@ const storeItems = [
     },
 ];
 
-// FUNÇÕES PARA CONQUISTAS
 function updateAchievementStats() {
-    // Salvar estatísticas atualizadas
     localStorage.setItem('totalClicks', totalClicks);
     localStorage.setItem('critCount', critCount);
     localStorage.setItem('totalItems', totalItems);
     
-    // Verificar e desbloquear conquistas
     checkAndUnlockAchievements();
 }
 
@@ -92,7 +100,6 @@ function checkAndUnlockAchievements() {
     const unlocked = loadUnlockedAchievements();
     let newAchievements = [];
 
-    // Conquistas de Cliques
     if (stats.totalClicks >= 1 && !unlocked.includes("first_click")) {
         unlocked.push("first_click");
         newAchievements.push("Primeiro Clique!");
@@ -119,7 +126,6 @@ function checkAndUnlockAchievements() {
         showAchievementPopup("Mestre dos Cliques", "👑");
     }
 
-    // Conquistas de Itens
     if (stats.totalItems >= 1 && !unlocked.includes("first_item")) {
         unlocked.push("first_item");
         newAchievements.push("Primeira Compra");
@@ -136,7 +142,6 @@ function checkAndUnlockAchievements() {
         showAchievementPopup("Mestre das Compras", "🏪");
     }
 
-    // Conquistas Especiais
     if (stats.critCount >= 1 && !unlocked.includes("first_crit")) {
         unlocked.push("first_crit");
         newAchievements.push("Crítico!");
@@ -163,7 +168,6 @@ function checkAndUnlockAchievements() {
         showAchievementPopup("Milionário", "💎");
     }
 
-    // Conquista de todos os itens
     const uniqueItems = getUniqueItemsCount();
     if (uniqueItems >= 4 && !unlocked.includes("all_items")) {
         unlocked.push("all_items");
@@ -216,7 +220,6 @@ function showAchievementPopup(name, icon) {
     }, 3000);
 }
 
-// Função para criar item na loja
 function addItemStore(item) {
     const div = document.createElement("div");
     div.classList.add("store-item");
@@ -234,13 +237,11 @@ function addItemStore(item) {
     div.appendChild(span);
     div.appendChild(img);
 
-    // Listener de compra
     img.addEventListener("click", () => {
         buyItem(item.id, item.upgradeKey, item.baseCost, item.multiplier);
     });
 }
 
-// Função de compra
 function buyItem(itemId, upgradeKey, baseCost, multiplier) {
     let currentClicks = parseInt(clicks.textContent);
     let currentUpgrades = parseInt(localStorage.getItem(upgradeKey) || 0);
@@ -250,24 +251,19 @@ function buyItem(itemId, upgradeKey, baseCost, multiplier) {
         currentClicks -= currentCost;
         currentUpgrades++;
 
-        // Atualiza custo do próximo item
         currentCost = Math.ceil(currentCost * multiplier);
         localStorage.setItem(`${upgradeKey}-cost`, currentCost);
 
-        // Atualiza clicks e upgrades
         clicks.textContent = currentClicks;
         localStorage.setItem("clicks", currentClicks);
         localStorage.setItem(upgradeKey, currentUpgrades);
 
-        // Atualiza badge do item
         const badge = document.getElementById(itemId).parentElement.querySelector(".item-count");
         badge.textContent = currentUpgrades;
 
-        // Atualizar estatísticas para conquistas
         totalItems += 1;
         updateAchievementStats();
 
-        // gastos totais
         let totalSpent = parseInt(localStorage.getItem('totalSpent')) || 0;
         totalSpent += currentCost;
         localStorage.setItem('totalSpent', totalSpent);
@@ -288,23 +284,20 @@ function buyItem(itemId, upgradeKey, baseCost, multiplier) {
             localStorage.setItem("valueBaseClick", valueBaseClick);
         }
         
-        initStore(); // verifica se novos itens desbloquearam
+        initStore();
     }
 }
 
-// Função para inicializar loja dinamicamente
 function initStore() {
     storeItems.forEach(item => {
         const upgrades = parseInt(localStorage.getItem(item.upgradeKey) || 0);
 
-        // Se já tem upgrade ou se passou da condição de desbloqueio
         if ((!document.getElementById(item.id)) && (upgrades > 0 || item.unlockCondition())) {
             addItemStore(item);
         }
     });
 }
 
-// Clique normal
 clickArea.addEventListener("click", () => {
     const isCrit = Math.random() * 100 < critChance;
     const ganho = isCrit ? valueBaseClick * critMultiplier : valueBaseClick
@@ -314,12 +307,24 @@ clickArea.addEventListener("click", () => {
     clicks.textContent = current;
     localStorage.setItem('clicks', current);
     
-    // Atualizar estatísticas para conquistas
     totalClicks += 1;
+    manualClicks += 1;
     if (isCrit) critCount += 1;
+    
+    if (ganho > biggestClick) {
+        biggestClick = ganho;
+        localStorage.setItem('biggestClick', biggestClick);
+    }
+    
+    if (isCrit && ganho > biggestCrit) {
+        biggestCrit = ganho;
+        localStorage.setItem('biggestCrit', biggestCrit);
+    }
+    
+    localStorage.setItem('manualClicks', manualClicks);
+    
     updateAchievementStats();
 
-    // Efeito visual do clique
     const clickEffect = document.createElement("span");
     clickEffect.classList.add("click-effect");
     clickEffect.textContent = `+${ganho}${isCrit ? " 💥" : ""}`;
@@ -331,13 +336,11 @@ clickArea.addEventListener("click", () => {
 
     document.body.appendChild(clickEffect);
 
-    // Remove depois da animação
     setTimeout(() => clickEffect.remove(), 800);
 
-    initStore(); // verifica se algum item desbloqueou
+    initStore();
 });
 
-// Sistema de cliques automáticos
 setInterval(() => {
     const now = Date.now();
     storeItems.forEach(item => {
@@ -348,7 +351,6 @@ setInterval(() => {
     });
 }, 1000);
 
-// Função para mostrar informações do item na div fixa
 function showItemInfo(item) {
     const cost = localStorage.getItem(`${item.upgradeKey}-cost`) || item.baseCost;
 
@@ -365,19 +367,35 @@ function showItemInfo(item) {
     itemInfo.style.display = "flex";
 }
 
-// Função para esconder informações
 function hideItemInfo() {
     itemInfo.style.display = "none";
 }
 
-// Adicione nos listeners da loja quando criar os itens
 function addStoreItemListeners(item, imgElement) {
     imgElement.addEventListener("mouseenter", () => showItemInfo(item));
     imgElement.addEventListener("mouseleave", hideItemInfo);
 }
 
-// Inicializa loja na primeira carga
 initStore();
 
-// Verificar conquistas na inicialização
 checkAndUnlockAchievements();
+
+setInterval(() => {
+    const sessionStart = parseInt(localStorage.getItem('sessionStartTime')) || Date.now();
+    const sessionTime = Math.floor((Date.now() - sessionStart) / 1000);
+    const savedTime = parseInt(localStorage.getItem('timePlayed')) || 0;
+    
+    if (sessionTime > 0 && sessionTime % 60 === 0) {
+        localStorage.setItem('timePlayed', savedTime + 60);
+        localStorage.setItem('sessionStartTime', Date.now());
+    }
+    
+    const totalTime = savedTime + sessionTime;
+    if (totalTime > 0) {
+        const currentCPS = totalClicks / totalTime;
+        if (currentCPS > peakCPS) {
+            peakCPS = currentCPS;
+            localStorage.setItem('peakCPS', peakCPS);
+        }
+    }
+}, 1000);

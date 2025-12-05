@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estatísticas - Clicker Game</title>
+    <link rel="stylesheet" href="estatisticas.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="menu">
+            <div id="profile">
+                <img src="./images/atirador.png" alt="">
+                <p></p>
+            </div>
+
+            <div id="itens">
+                <ul>
+                    <li><a href="index.html">Voltar ao Jogo</a></li>
+                    <li><a href="conquistas.html">Conquistas</a></li>
+                    <li><a href="#" id="theme-toggle">Temas</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="main">
+            <h1>📊 Estatísticas Detalhadas</h1>
+            
+            <div class="stats-grid">
+                <!-- Estatísticas Gerais -->
+                <div class="stat-section">
+                    <h2>🎯 Estatísticas Gerais</h2>
+                    <div class="stat-card">
+                        <div class="stat-label">Total de Cliques</div>
+                        <div class="stat-value" id="stat-total-clicks">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Cliques Atuais</div>
+                        <div class="stat-value" id="stat-current-clicks">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Tempo Jogado</div>
+                        <div class="stat-value" id="stat-time-played">0h 0m</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Cliques por Segundo (CPS)</div>
+                        <div class="stat-value" id="stat-cps">0.00</div>
+                    </div>
+                </div>
+
+                <!-- Estatísticas de Cliques -->
+                <div class="stat-section">
+                    <h2>👆 Estatísticas de Cliques</h2>
+                    <div class="stat-card">
+                        <div class="stat-label">Cliques Manuais</div>
+                        <div class="stat-value" id="stat-manual-clicks">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Cliques Automáticos</div>
+                        <div class="stat-value" id="stat-auto-clicks">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Maior Clique Único</div>
+                        <div class="stat-value" id="stat-biggest-click">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Valor Base do Clique</div>
+                        <div class="stat-value" id="stat-base-click-value">1</div>
+                    </div>
+                </div>
+
+                <!-- Estatísticas de Críticos -->
+                <div class="stat-section">
+                    <h2>💥 Estatísticas de Críticos</h2>
+                    <div class="stat-card">
+                        <div class="stat-label">Total de Críticos</div>
+                        <div class="stat-value" id="stat-total-crits">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Taxa de Crítico</div>
+                        <div class="stat-value" id="stat-crit-rate">0.00%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Chance de Crítico</div>
+                        <div class="stat-value" id="stat-crit-chance">0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Multiplicador de Crítico</div>
+                        <div class="stat-value" id="stat-crit-multiplier">10x</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Maior Crítico</div>
+                        <div class="stat-value" id="stat-biggest-crit">0</div>
+                    </div>
+                </div>
+
+                <!-- Estatísticas de Itens -->
+                <div class="stat-section">
+                    <h2>🛍️ Estatísticas de Itens</h2>
+                    <div class="stat-card">
+                        <div class="stat-label">Total de Itens Comprados</div>
+                        <div class="stat-value" id="stat-total-items">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Cliques Automáticos</div>
+                        <div class="stat-value" id="stat-autoclickers">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Upgrades de Chance Crítica</div>
+                        <div class="stat-value" id="stat-crit-upgrades">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Upgrades de Valor Base</div>
+                        <div class="stat-value" id="stat-value-upgrades">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Upgrades de Multiplicador</div>
+                        <div class="stat-value" id="stat-multiplier-upgrades">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Gasto</div>
+                        <div class="stat-value" id="stat-total-spent">0</div>
+                    </div>
+                </div>
+
+                <!-- Estatísticas de Performance -->
+                <div class="stat-section">
+                    <h2>⚡ Performance</h2>
+                    <div class="stat-card">
+                        <div class="stat-label">Cliques por Minuto (Atual)</div>
+                        <div class="stat-value" id="stat-cpm">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Melhor CPS (Pico)</div>
+                        <div class="stat-value" id="stat-peak-cps">0.00</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Ganho Total</div>
+                        <div class="stat-value" id="stat-total-earned">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Eficiência (Ganho/Gasto)</div>
+                        <div class="stat-value" id="stat-efficiency">0.00</div>
+                    </div>
+                </div>
+
+                <!-- Estatísticas de Sessão -->
+                <div class="stat-section">
+                    <h2>📅 Sessão Atual</h2>
+                    <div class="stat-card">
+                        <div class="stat-label">Tempo nesta Sessão</div>
+                        <div class="stat-value" id="stat-session-time">0m 0s</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Cliques nesta Sessão</div>
+                        <div class="stat-value" id="stat-session-clicks">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Ganho nesta Sessão</div>
+                        <div class="stat-value" id="stat-session-earned">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="theme-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>🎨 Escolha um Tema</h2>
+            <div id="themes-container"></div>
+        </div>
+    </div>
+
+    <script src="themes.js"></script>
+    <script src="estatisticas.js"></script>
+</body>
+</html>
+
